@@ -58,7 +58,7 @@ function checkGrid(rowsGrid, hiddenWordsArr) {
   console.log(hiddenWordsArr);
 }
 
-// function to turn words present both in the grid  and in the words array to upperCase
+// function to turn words present both in the grid and in the words array to upperCase (only affects rows and columns, not diagonals)
 function turnWordsToUpperCase(grid, wordsArr) {
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < wordsArr.length; j++) {

@@ -96,7 +96,7 @@ function extractDiagonals(grid) {
   // console.log(diags)
 
   // extract lower right-side diagonals
-  for (let i = 0; i <= grid.length - 1; i++) {
+  for (let i = 1; i < grid.length; i++) {
     let tempI = grid.length - 1;
     let tempJ = i;
     let diag = "";

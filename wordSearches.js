@@ -38,6 +38,15 @@ function checkGrid(rowsGrid, hiddenWordsArr) {
   let diagonals = extractDiagonals(rowsGrid);
   // console.log(diagonals)
 
+  // convert the hidden names found inside diagonals to upprCase => now we have ALL hidden names to uppercase inside the diagonals array
+  // now we only need to convert back the array of diagonals into the original grid
+  turnWordsToUpperCase(diagonals, hiddenWordsArr);
+  // console.log(diagonals)
+
+  // (at this point we have ALL the hidden words in uppercase inside the diagonals grid - including those found inside rows and columns)
+  // turn the uperCase-updated diagonals grid intro the original grid, so that we can display it
+  const finalGrid = turnDiagonalsBackToGrid(diagonals, rowsGrid);
+
   // traversing the rowsGrid line by line and searching for the hidden words inside each line, left-to-right and right-to-left
   // if any words are found, remove them from the hiddenWords
   for (const line of rowsGrid) {
@@ -55,7 +64,51 @@ function checkGrid(rowsGrid, hiddenWordsArr) {
   }
 
   // print the hiddenWordsArr with the unfound words
-  console.log(hiddenWordsArr);
+  console.log(finalGrid, hiddenWordsArr);
+}
+
+// function to turn diagonals grid back into original grid (and transform the hidden words in upperCase)
+function turnDiagonalsBackToGrid(diags, grid) {
+  let finalGrid = [];
+  // find the biggest diagonal inside diags, so we can set the row length of our finalGrid to its length
+  let biggestDiag = diags[0];
+  for (let i = 0; i < diags.length / 2; i++) {
+    if (diags[i].length > biggestDiag.length) {
+      biggestDiag = diags[i];
+    }
+  }
+  // console.log(diags)
+
+  // traverse the diagonals grid and recreate the original Grid from it, with the hidden words in UPPER CASE
+  for (let i = 0; i < diags.length / 2; i++) {
+    let row = "";
+    let tempI = i;
+    let tempJ = 0;
+    while (
+      tempI + tempJ <= (biggestDiag.length - 1) * 2 &&
+      tempI >= 0 &&
+      tempJ >= 0 &&
+      finalGrid.length < grid.length
+    ) {
+      if (tempI >= biggestDiag.length) {
+        row += diags[tempI][tempJ];
+        if (row.length === biggestDiag.length) {
+          break;
+        }
+        tempI++;
+      } else {
+        row += diags[tempI][tempJ];
+        tempI++;
+        tempJ++;
+        if (tempJ === biggestDiag.length || tempI === biggestDiag.length) {
+          tempJ--;
+        }
+      }
+    }
+    finalGrid.push(row);
+  }
+
+  return finalGrid.filter((elem) => elem.length >= 1);
 }
 
 // function to turn words present both in the grid and in the words array to upperCase (only affects rows and columns, not diagonals)
@@ -165,13 +218,6 @@ function checkLine(line, hiddenWordsArr) {
       line.toLowerCase().includes(hiddenWordsArr[i]) ||
       reverseLine.toLowerCase().includes(hiddenWordsArr[i])
     ) {
-      // if(reverseLine.toLowerCase().includes(hiddenWordsArr[i])){
-      //     reverseLine = reverseLine.replace(hiddenWordsArr[i], hiddenWordsArr[i].toUpperCase())
-      //     upperCaseNamesLines.push(reverseLine.split("").reverse().join(""))
-      // } else if(line.includes(hiddenWordsArr[i])){
-      //     line = line.replace(hiddenWordsArr[i], hiddenWordsArr[i].toUpperCase())
-      //     upperCaseNamesLines.push(line)
-      // }
       hiddenWordsArr.splice(i, 1);
     }
   }

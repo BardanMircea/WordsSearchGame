@@ -59,8 +59,12 @@ function checkGrid(rowsGrid, hiddenWordsArr) {
   // (Reminder: at this point we should have ALL the hidden words in uppercase inside the diagonals grid - including those found inside rows and columns)
   const finalGrid = mergeDiagonalsGridIntoOriginalGrid(diagonals);
 
-  // print the grid with the hidden words to UpperCase, and the hiddenWordsArr with the remaining words (that weren't found inside the grid)
-  console.log(finalGrid, hiddenWordsArr);
+  // print the grid with the hidden words to UpperCase
+  for (elem of finalGrid) {
+    console.log(elem);
+  }
+  // and the hiddenWordsArr with the remaining words (that weren't found inside the grid)
+  console.log(hiddenWordsArr);
 }
 
 // function to merge diagonals grid into the original grid (and restore the updated elements to their original position)
@@ -75,6 +79,7 @@ function mergeDiagonalsGridIntoOriginalGrid(diags) {
 
   return finalGrid;
 
+  // function to merge the 2 updated diagonalGrids into one final and complete grid
   function mergeTheTwoPartsTogether() {
     const finalGrid = [];
     for (let i = 0; i < firtsPart.length; i++) {
@@ -91,6 +96,7 @@ function mergeDiagonalsGridIntoOriginalGrid(diags) {
     return finalGrid;
   }
 
+  // function to merge the updated left-side diagonals gridinto the final grid
   function mergeUpperLeftToLowerRightDiags() {
     let grid = [];
     // find the biggest diagonal inside diags, so we can set the row, column and grid length of our grid to its length (since we know we are dealing with a perfect square)
@@ -119,6 +125,7 @@ function mergeDiagonalsGridIntoOriginalGrid(diags) {
     return grid;
   }
 
+  // function to merge the updated right-side diagonals grid into the final grid
   function mergeUpperRighToLowerLeftDiags() {
     let grid = [];
     // find the biggest diagonal inside diags, so we can set the row, column and grid length of our grid to its length (since we know we are dealing with a perfect square)

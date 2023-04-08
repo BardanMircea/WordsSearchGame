@@ -53,17 +53,14 @@ function checkGrid(rowsGrid, hiddenWordsArr) {
   for (const line of rowsGrid) {
     checkLine(line, hiddenWordsArr);
   }
-
   // same thing for the columnsGrid
   for (const line of columnsGrid) {
     checkLine(line, hiddenWordsArr);
   }
-
   // same thing for all the diagonals
   for (const diag of diagonals) {
     checkLine(diag, hiddenWordsArr);
   }
-
   // print the hiddenWordsArr with the unfound words
   console.log(finalGrid, hiddenWordsArr);
 }
@@ -121,13 +118,14 @@ function turnWordsToUpperCase(grid, wordsArr) {
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < wordsArr.length; j++) {
       let reversed = grid[i].split("").reverse().join("");
+
       if (grid[i].includes(wordsArr[j])) {
         grid[i] = grid[i].replace(wordsArr[j], wordsArr[j].toUpperCase());
       }
       if (reversed.includes(wordsArr[j])) {
         grid[i] = grid[i].replace(
-          wordsArr[j].split().reverse().join(""),
-          wordsArr[j].split().reverse().join("").toUpperCase()
+          wordsArr[j].split("").reverse().join(""),
+          wordsArr[j].split("").reverse().join("").toUpperCase()
         );
       }
     }

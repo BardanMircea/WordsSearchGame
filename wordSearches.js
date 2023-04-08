@@ -69,8 +69,8 @@ function checkGrid(rowsGrid, hiddenWordsArr) {
 
 // function to merge diagonals grid into the original grid (and restore the updated elements to their original position)
 function mergeDiagonalsGridIntoOriginalGrid(diags) {
-  let firtsPart = mergeUpperRighToLowerLeftDiags();
-  // console.log(firtsPart)
+  let firstPart = mergeUpperRighToLowerLeftDiags();
+  // console.log(firstPart)
 
   let secondPart = mergeUpperLeftToLowerRightDiags();
   // console.log(secondPart)
@@ -82,13 +82,13 @@ function mergeDiagonalsGridIntoOriginalGrid(diags) {
   // function to merge the 2 updated diagonalGrids into one final and complete grid
   function mergeTheTwoPartsTogether() {
     const finalGrid = [];
-    for (let i = 0; i < firtsPart.length; i++) {
+    for (let i = 0; i < firstPart.length; i++) {
       finalGrid[i] = [];
-      for (let j = 0; j < firtsPart[i].length; j++) {
-        if (firtsPart[i][j] != secondPart[i][j]) {
-          finalGrid[i][j] = firtsPart[i][j].toUpperCase();
+      for (let j = 0; j < firstPart[i].length; j++) {
+        if (firstPart[i][j] != secondPart[i][j]) {
+          finalGrid[i][j] = firstPart[i][j].toUpperCase();
         } else {
-          finalGrid[i][j] = firtsPart[i][j];
+          finalGrid[i][j] = firstPart[i][j];
         }
       }
       finalGrid[i] = finalGrid[i].join("");
@@ -96,7 +96,7 @@ function mergeDiagonalsGridIntoOriginalGrid(diags) {
     return finalGrid;
   }
 
-  // function to merge the updated left-side diagonals gridinto the final grid
+  // function to merge the updated left-side diagonals grid into the final grid
   function mergeUpperLeftToLowerRightDiags() {
     let grid = [];
     // find the biggest diagonal inside diags, so we can set the row, column and grid length of our grid to its length (since we know we are dealing with a perfect square)
@@ -139,7 +139,6 @@ function mergeDiagonalsGridIntoOriginalGrid(diags) {
       let tempJ = 0;
       while (
         tempI + tempJ <= (gridLength - 1) * 2 &&
-        tempI >= 0 &&
         tempJ >= 0 &&
         grid.length < gridLength
       ) {
@@ -175,7 +174,7 @@ function mergeDiagonalsGridIntoOriginalGrid(diags) {
   }
 }
 
-// function to turn words present both inside the grid, and inside the words array, to upperCase
+// function to turn the words present both inside the grid and inside the words array, to upperCase
 function turnWordsToUpperCase(grid, wordsArr) {
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < wordsArr.length; j++) {

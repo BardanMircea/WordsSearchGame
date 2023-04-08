@@ -16,17 +16,16 @@ const wordSearches = () => {
 
 // first function called by wordSearches()
 function checkGrid(rowsGrid, hiddenWordsArr) {
-  // console.log(rowsGrid)
-
+  // *BEGINNER*
   // using the original grid, create a second grid that transforms the columns into rows, so that we can easily traverse them
-  let columnsGrid = turnColumnsToRows(rowsGrid);
+  const columnsGrid = turnColumnsToRows(rowsGrid);
 
-  // change the names from hiddenWords found in the grid to uppercase
+  // change the names from hiddenWords found in the grid to UPPERCASE
   // first: the names found inside columns
   turnWordsToUpperCase(columnsGrid, hiddenWordsArr);
   // console.log(columnsGrid)
 
-  // then rotate the upper-converted columns back into rows
+  // then rotate the UPPERCASE-converted columns back into rows
   rowsGrid = turnColumnsToRows(columnsGrid);
   // console.log(rowsGrid)
 
@@ -38,15 +37,9 @@ function checkGrid(rowsGrid, hiddenWordsArr) {
   const diagonals = extractDiagonals(rowsGrid);
   // console.log(diagonals)
 
-  // convert the hidden names found inside diagonals to upprCase => now we have ALL hidden names to uppercase inside the diagonals array
-  // now we only need to insert the array of diagonals back into the original grid
+  // convert the hidden names found inside diagonals to upperCase => we now have ALL the hidden names in uppercase inside the diagonals array
   turnWordsToUpperCase(diagonals, hiddenWordsArr);
   // console.log(diagonals)
-
-  // (at this point we should have ALL the hidden words in uppercase inside the diagonals grid - including those found inside rows and columns)
-  // >> So far, I've only managed to include half the diagonals  - The ones parallel to HOOH, but not those parallel to ABSOL <<
-  // insert the uperCase-updated diagonals grid intro the original grid, so that we can display it
-  const finalGrid = insertDiagonalsBackIntoGrid(diagonals, rowsGrid);
 
   // traversing the rowsGrid line by line and searching for the hidden words inside each line, left-to-right and right-to-left
   // if any words are found, remove them from the hiddenWords
@@ -61,59 +54,121 @@ function checkGrid(rowsGrid, hiddenWordsArr) {
   for (const diag of diagonals) {
     checkLine(diag, hiddenWordsArr);
   }
-  // print the hiddenWordsArr with the unfound words
+
+  // *ADVANCED* merge the uperCase-updated diagonals grid intro the original grid, so that we can display it
+  // (Reminder: at this point we should have ALL the hidden words in uppercase inside the diagonals grid - including those found inside rows and columns)
+  const finalGrid = mergeDiagonalsGridIntoOriginalGrid(diagonals);
+
+  // print the grid with the hidden words to UpperCase, and the hiddenWordsArr with the remaining words (that weren't found inside the grid)
   console.log(finalGrid, hiddenWordsArr);
 }
 
-// =====>>>> !!!! THIS FUNCTION IS A WORK IN PROGRESS !!!! <<<<=======   ======>>>>> !!!!  CHANTIER  !!!! <<<<======
-// function to turn diagonals grid back into original grid (and transform the hidden words to upperCase)
-function insertDiagonalsBackIntoGrid(diags, grid) {
-  let finalGrid = [];
-  // find the biggest diagonal inside diags, so we can set the row length of our finalGrid to its length
-  let biggestDiag = diags[0];
-  for (let i = 0; i < diags.length / 2; i++) {
-    if (diags[i].length > biggestDiag.length) {
-      biggestDiag = diags[i];
-    }
-  }
-  // console.log(diags)
+// function to merge diagonals grid into the original grid (and restore the updated elements to their original position)
+function mergeDiagonalsGridIntoOriginalGrid(diags) {
+  let firtsPart = mergeUpperRighToLowerLeftDiags();
+  // console.log(firtsPart)
 
-  // traverse the diagonals grid and recreate the original Grid from it, with the hidden words in UPPER CASE
-  for (let i = 0; i < diags.length / 2; i++) {
-    let row = "";
-    let tempI = i;
-    let tempJ = 0;
-    while (
-      tempI + tempJ <= (biggestDiag.length - 1) * 2 &&
-      tempI >= 0 &&
-      tempJ >= 0 &&
-      finalGrid.length < grid.length
-    ) {
-      if (tempI >= biggestDiag.length) {
-        row += diags[tempI][tempJ];
-        if (row.length === biggestDiag.length) {
-          break;
-        }
-        tempI++;
-      } else {
-        row += diags[tempI][tempJ];
-        tempI++;
-        tempJ++;
-        if (tempJ === biggestDiag.length || tempI === biggestDiag.length) {
-          tempJ--;
-        }
-      }
-    }
-    finalGrid.push(row);
-  }
+  let secondPart = mergeUpperLeftToLowerRightDiags();
+  // console.log(secondPart)
+
+  const finalGrid = mergeTheTwoPartsTogether();
 
   return finalGrid;
 
-  //.filter(elem => elem.length >= 1)
-}
-// =====>>>> !!!! THIS FUNCTION IS A WORK IN PROGRESS !!!! <<<<=======   ======>>>>> !!!!  CHANTIER  !!!! <<<<======
+  function mergeTheTwoPartsTogether() {
+    const finalGrid = [];
+    for (let i = 0; i < firtsPart.length; i++) {
+      finalGrid[i] = [];
+      for (let j = 0; j < firtsPart[i].length; j++) {
+        if (firtsPart[i][j] != secondPart[i][j]) {
+          finalGrid[i][j] = firtsPart[i][j].toUpperCase();
+        } else {
+          finalGrid[i][j] = firtsPart[i][j];
+        }
+      }
+      finalGrid[i] = finalGrid[i].join("");
+    }
+    return finalGrid;
+  }
 
-// function to turn words present both in the grid and in the words array to upperCase (only affects rows and columns, not diagonals)
+  function mergeUpperLeftToLowerRightDiags() {
+    let grid = [];
+    // find the biggest diagonal inside diags, so we can set the row, column and grid length of our grid to its length (since we know we are dealing with a perfect square)
+    const gridLength = findGridLength();
+
+    // traverse the second part of the diagonals grid and change the positions to those in the original Grid, with the hidden words in UPPER CASE
+    for (let i = 0; i < gridLength; i++) {
+      let row = "";
+      let tempI = gridLength - 1 + i;
+      let tempJ = 0;
+      while (tempI < diags.length / 2) {
+        if (tempI < tempJ) {
+          break;
+        }
+        if (tempI <= gridLength - 1) {
+          row += diags[tempI + diags.length / 2][tempJ]; // adding diags.length/2 to the value of tempI because we are traversing the second half of the diags grid, which starts at index 27
+          tempI--;
+        } else {
+          row += diags[tempI + diags.length / 2][tempJ];
+          tempI--;
+          tempJ++;
+        }
+      }
+      grid.push(row);
+    }
+    return grid;
+  }
+
+  function mergeUpperRighToLowerLeftDiags() {
+    let grid = [];
+    // find the biggest diagonal inside diags, so we can set the row, column and grid length of our grid to its length (since we know we are dealing with a perfect square)
+    const gridLength = findGridLength();
+    // console.log(gridLength)
+
+    // traverse the first part of the diagonals grid and change the positions to those in the original Grid, with the hidden words in UPPER CASE
+    for (let i = 0; i < gridLength; i++) {
+      let row = "";
+      let tempI = i;
+      let tempJ = 0;
+      while (
+        tempI + tempJ <= (gridLength - 1) * 2 &&
+        tempI >= 0 &&
+        tempJ >= 0 &&
+        grid.length < gridLength
+      ) {
+        if (tempI >= gridLength) {
+          row += diags[tempI][tempJ];
+          if (row.length === gridLength) {
+            break;
+          }
+          tempI++;
+        } else {
+          row += diags[tempI][tempJ];
+          tempI++;
+          tempJ++;
+          if (tempJ === gridLength || tempI === gridLength) {
+            tempJ--;
+          }
+        }
+      }
+      grid.push(row);
+    }
+    return grid;
+  }
+
+  // function to find the row, column and grid length of our grid, by finding the longest line in our diags grid
+  function findGridLength() {
+    let biggestDiag = diags[0];
+    for (let i = 0; i < diags.length / 2; i++) {
+      if (diags[i].length > biggestDiag.length) {
+        biggestDiag = diags[i];
+      }
+    }
+    return biggestDiag.length;
+  }
+}
+
+// function to turn words present both inside the grid, and inside the words array, to upperCase
 function turnWordsToUpperCase(grid, wordsArr) {
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < wordsArr.length; j++) {
@@ -121,8 +176,7 @@ function turnWordsToUpperCase(grid, wordsArr) {
 
       if (grid[i].includes(wordsArr[j])) {
         grid[i] = grid[i].replace(wordsArr[j], wordsArr[j].toUpperCase());
-      }
-      if (reversed.includes(wordsArr[j])) {
+      } else if (reversed.includes(wordsArr[j])) {
         grid[i] = grid[i].replace(
           wordsArr[j].split("").reverse().join(""),
           wordsArr[j].split("").reverse().join("").toUpperCase()
@@ -212,8 +266,8 @@ function turnColumnsToRows(initialGrid) {
   return columnsGrid;
 }
 
-// function to check each line, and corresponding reverse line, for words that are inside the array
-// Removes any words that are found inside the line from the array and returns the updated array
+// function to check each line, and corresponding reverse line, for the hidden words that are inside the hiddenWordsArray
+// Removes any words that are found inside the line from the array
 function checkLine(line, hiddenWordsArr) {
   let reverseLine = line.split("").reverse().join("");
   for (let i = 0; i < hiddenWordsArr.length; i++) {

@@ -18,7 +18,7 @@ const wordSearches = () => {
 function checkGrid(rowsGrid, hiddenWordsArr) {
   // console.log(rowsGrid)
 
-  // using the original grid, create a second grid that transforms the argument's columns into rows, so that we can easily traverse the columns
+  // using the original grid, create a second grid that transforms the columns into rows, so that we can easily traverse them
   let columnsGrid = turnColumnsToRows(rowsGrid);
 
   // change the names from hiddenWords found in the grid to uppercase
@@ -35,17 +35,18 @@ function checkGrid(rowsGrid, hiddenWordsArr) {
   // console.log(rowsGrid)
 
   // *INTERMEDIATE* extract all the diagonals, so we can check them against the list of words
-  let diagonals = extractDiagonals(rowsGrid);
+  const diagonals = extractDiagonals(rowsGrid);
   // console.log(diagonals)
 
   // convert the hidden names found inside diagonals to upprCase => now we have ALL hidden names to uppercase inside the diagonals array
-  // now we only need to convert back the array of diagonals into the original grid
+  // now we only need to insert the array of diagonals back into the original grid
   turnWordsToUpperCase(diagonals, hiddenWordsArr);
   // console.log(diagonals)
 
-  // (at this point we have ALL the hidden words in uppercase inside the diagonals grid - including those found inside rows and columns)
-  // turn the uperCase-updated diagonals grid intro the original grid, so that we can display it
-  const finalGrid = turnDiagonalsBackToGrid(diagonals, rowsGrid);
+  // (at this point we should have ALL the hidden words in uppercase inside the diagonals grid - including those found inside rows and columns)
+  // >> So far, I've only managed to include half the diagonals  - The ones parallel to HOOH, but not those parallel to ABSOL <<
+  // insert the uperCase-updated diagonals grid intro the original grid, so that we can display it
+  const finalGrid = insertDiagonalsBackIntoGrid(diagonals, rowsGrid);
 
   // traversing the rowsGrid line by line and searching for the hidden words inside each line, left-to-right and right-to-left
   // if any words are found, remove them from the hiddenWords
@@ -67,8 +68,9 @@ function checkGrid(rowsGrid, hiddenWordsArr) {
   console.log(finalGrid, hiddenWordsArr);
 }
 
-// function to turn diagonals grid back into original grid (and transform the hidden words in upperCase)
-function turnDiagonalsBackToGrid(diags, grid) {
+// =====>>>> !!!! THIS FUNCTION IS A WORK IN PROGRESS !!!! <<<<=======   ======>>>>> !!!!  CHANTIER  !!!! <<<<======
+// function to turn diagonals grid back into original grid (and transform the hidden words to upperCase)
+function insertDiagonalsBackIntoGrid(diags, grid) {
   let finalGrid = [];
   // find the biggest diagonal inside diags, so we can set the row length of our finalGrid to its length
   let biggestDiag = diags[0];
@@ -108,8 +110,11 @@ function turnDiagonalsBackToGrid(diags, grid) {
     finalGrid.push(row);
   }
 
-  return finalGrid.filter((elem) => elem.length >= 1);
+  return finalGrid;
+
+  //.filter(elem => elem.length >= 1)
 }
+// =====>>>> !!!! THIS FUNCTION IS A WORK IN PROGRESS !!!! <<<<=======   ======>>>>> !!!!  CHANTIER  !!!! <<<<======
 
 // function to turn words present both in the grid and in the words array to upperCase (only affects rows and columns, not diagonals)
 function turnWordsToUpperCase(grid, wordsArr) {
@@ -131,7 +136,7 @@ function turnWordsToUpperCase(grid, wordsArr) {
 
 // function to extract all diagonals from grid
 function extractDiagonals(grid) {
-  let diags = [];
+  const diags = [];
 
   // etract upper left-side diagonals
   for (let i = 0; i < grid.length; i++) {

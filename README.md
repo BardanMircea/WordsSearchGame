@@ -20,7 +20,7 @@ For the first step of the project, I will look for the hidden words on the verti
 Step 2 - Intermediate
 Let's spice things up by adding diagonals!
 
-To validate this step, the program must be able to detect words that are present in both diagonals, from top-to-bottom as well as bottom-to-top.
+To validate this step, the program must be able to detect words that are present at the diagonals level (in ALL diagonals, the 2 main ones, as well as all the secondary ones) from top-to-bottom as well as bottom-to-top.
 
 Step 3 - Advanced
 For this final step, the program will print back the grid after having replaced all the hidden words by their uppercase version. Only letters that are not part of any words should remain in lowercase.
